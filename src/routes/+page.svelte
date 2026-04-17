@@ -1,8 +1,36 @@
 <script lang="ts">
   import { epochs } from '$lib/data/epochs';
 
-  // JS has been completely removed to solve scroll stuttering.
-  // The layout now relies 100% on CSS rendering pipelines.
+  // Svelte 5 state to track which cinematic section is currently in viewport focus
+  let activeIndex = $state(-1);
+
+  // Svelte 5 equivalent of onMount. 
+  // Native IntersectionObserver guarantees high performance without scroll listeners.
+  $effect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Find the index of the intersecting element
+            const index = Number(entry.target.getAttribute('data-index'));
+            activeIndex = index;
+          }
+        });
+      },
+      {
+        // 40% of the item must be visible to trigger a focus change
+        threshold: 0.4, 
+      }
+    );
+
+    // Observe all components marked for the narrative
+    const elements = document.querySelectorAll('.narrative-section');
+    elements.forEach((el) => observer.observe(el));
+
+    return () => {
+      observer.disconnect();
+    };
+  });
 </script>
 
 <svelte:head>
@@ -10,25 +38,51 @@
   <meta name="description" content="A cinematic narrative exploring the profound evolution of programming languages." />
 </svelte:head>
 
-<!-- Global wrapper that natively calculates the smooth scroll gradient -->
+<!-- Global wrapper providing the smooth light color gradient -->
 <div class="narrative-wrapper">
+  
+  <!-- TIMELINE INDICATOR (Vertical Sidebar) -->
+  <aside class="timeline-indicator">
+    <div class="timeline-line"></div>
+    <div class="timeline-dots">
+      <!-- Hero Dot -->
+      <div 
+        class="dot {activeIndex === -1 ? 'active' : ''}" 
+        aria-label="Start"
+      >
+        <span class="dot-label">Start</span>
+      </div>
+      <!-- Epoch Dots -->
+      {#each epochs as epoch, i}
+        <div 
+          class="dot {activeIndex === i ? 'active' : ''}" 
+          aria-label={epoch.era}
+        >
+          <span class="dot-label">{epoch.year}</span>
+        </div>
+      {/each}
+    </div>
+  </aside>
+
   <main>
     <!-- INTRODUCTION: HERO -->
-    <section class="chapter hero">
-      <div class="content-box align-center">
-        <!-- Replaced hover scale with continuous shimmer animation and fixed line height -->
+    <section class="chapter hero narrative-section" data-index="-1">
+      <div class="content-box align-center {activeIndex === -1 ? 'is-active' : 'is-inactive'}">
         <h1 class="hero-title">Code<br/>Journey</h1>
         <p class="hero-subtitle">The profound evolution of processing thought.</p>
       </div>
-      <div class="scroll-hint">Scroll down to begin</div>
+      <div class="scroll-hint {activeIndex === -1 ? 'visible' : 'hidden'}">Scroll down to begin</div>
     </section>
 
     <!-- NARRATIVE CHAPTERS -->
     {#each epochs as epoch, i}
-      <section class="chapter timeline-block">
+      <section class="chapter timeline-block narrative-section" data-index={i}>
         <div class="sticky-container">
-          <div class="content-box card" class:align-left={i % 2 === 0} class:align-right={i % 2 !== 0}>
-            
+          
+          <!-- Cinematic Focus Box -->
+          <div 
+            class="content-box card {activeIndex === i ? 'is-active' : 'is-inactive'} {i % 2 === 0 ? 'align-left' : 'align-right'}"
+          >
             <div class="epoch-header">
               <span class="meta-tag">{epoch.year}</span>
               <span class="meta-divider">·</span>
@@ -38,7 +92,21 @@
             <h2 class="section-title">{epoch.title}</h2>
             <p class="poetic-text">"{epoch.poetic}"</p>
             <p class="section-desc">{epoch.narrative}</p>
-            
+
+            <!-- THE WOW MOMENT: THE TEXT EVOLUTION FOR MACHINE ERA -->
+            {#if epoch.era === "Machine Era"}
+              <div class="evolution-moment" class:evolved={activeIndex === i}>
+                <div class="binary-state">
+                  01001100 01001111 01000001<br/>
+                  01000100 00100000 01010010
+                </div>
+                <div class="assembly-state">
+                  LOAD R1, 0x4F<br/>
+                  ADD R2, R1
+                </div>
+              </div>
+            {/if}
+
           </div>
         </div>
       </section>
@@ -50,9 +118,7 @@
   :global(body) {
     margin: 0;
     padding: 0;
-    /* Soft sky blue base fallback */
     background-color: #e0f2fe; 
-    /* Changed globally to dark text for the airy palette */
     color: #0f172a;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     overflow-x: hidden;
@@ -60,17 +126,8 @@
 
   .narrative-wrapper {
     width: 100%;
-    /* Pure CSS performance fix: massive linear gradient mapping the 9 sections */
-    /* Hero: #e0f2fe (sky) 
-       Origins: #cffafe (cyan)
-       Machine: #f3e8ff (lavender)
-       Assembly: #ccfbf1 (teal)
-       High Level: #fef3c7 (warm white)
-       Structured: #e0e7ff (indigo)
-       OO Era: #fce7f3 (pink)
-       Internet: #a5f3fc (bright cyan)
-       Modern: #dbeafe (periwinkle)
-       Future: #ffffff (white) */
+    position: relative;
+    /* Massive linear gradient fixing the background transition jitter natively */
     background: linear-gradient(
       to bottom,
       #e0f2fe 0%,
@@ -87,12 +144,90 @@
     );
   }
 
+  /* ---------------------------------
+     TIMELINE INDICATOR (SIDEBAR)
+  --------------------------------- */
+  .timeline-indicator {
+    position: fixed;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    padding: 1rem 0;
+    z-index: 50;
+  }
+
+  .timeline-line {
+    position: absolute;
+    right: 3px;
+    top: 5px;
+    bottom: 5px;
+    width: 2px;
+    background: rgba(15, 23, 42, 0.1);
+    border-radius: 2px;
+    z-index: 1;
+  }
+
+  .timeline-dots {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    background: #94a3b8;
+    border-radius: 50%;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: default;
+  }
+
+  .dot.active {
+    background: #2563eb;
+    transform: scale(1.8);
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
+  }
+
+  .dot-label {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(4px);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: 0.1em;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s ease;
+  }
+
+  .dot.active .dot-label {
+    opacity: 1;
+    transform: translateY(-50%) translateX(-5px);
+  }
+
+  @media (max-width: 1024px) {
+    .timeline-indicator { display: none; }
+  }
+
+
+  /* ---------------------------------
+     LAYOUT AND STRUCTURAL BLOCKS
+  --------------------------------- */
   .chapter {
     position: relative;
     width: 100%;
   }
 
-  /* Cinematic Hero */
   .hero {
     height: 100vh;
     display: flex;
@@ -101,16 +236,116 @@
     align-items: center;
   }
 
+  .timeline-block {
+    height: 150vh; 
+  }
+
+  .sticky-container {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 5vw;
+    box-sizing: border-box;
+  }
+
+  /* ---------------------------------
+     CINEMATIC FOCUS STYLES
+  --------------------------------- */
+  .content-box {
+    width: 100%;
+    max-width: 800px;
+    padding: 2.5rem;
+    /* The core cinematic transition for blurring / focusing elements */
+    transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                opacity 1.2s ease, 
+                filter 1.2s ease;
+    will-change: transform, opacity, filter;
+  }
+
+  .is-active {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0px);
+  }
+
+  .is-inactive {
+    opacity: 0.25;
+    transform: scale(0.96) translateY(20px);
+    filter: blur(5px);
+  }
+
+  .align-center { margin: 0 auto; text-align: center; }
+  .align-left { margin-right: auto; text-align: left; padding-left: 8vw; }
+  .align-right { margin-left: auto; text-align: right; padding-right: 12vw; }
+
+
+  /* ---------------------------------
+     TEXT EVOLUTION (THE WOW MOMENT)
+  --------------------------------- */
+  .evolution-moment {
+    position: relative;
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    height: 60px;
+    overflow: hidden;
+  }
+
+  .binary-state, .assembly-state {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    transition: all 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .binary-state {
+    color: #94a3b8;
+    letter-spacing: 0.2em;
+    opacity: 1;
+    filter: blur(0px);
+  }
+
+  .assembly-state {
+    color: #2563eb;
+    letter-spacing: 0.1em;
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(-50%) translateX(-20px);
+  }
+
+  /* When the class 'evolved' is attached (section active) flip the states */
+  .evolution-moment.evolved .binary-state {
+    opacity: 0;
+    filter: blur(15px);
+    transform: translateY(-50%) translateX(20px);
+  }
+
+  .evolution-moment.evolved .assembly-state {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateY(-50%) translateX(0);
+    transition-delay: 0.4s; /* Slight delay feels dramatic */
+  }
+
+
+  /* ---------------------------------
+     TYPOGRAPHY
+  --------------------------------- */
   .hero-title {
     font-size: clamp(4rem, 15vw, 12rem);
     font-weight: 900;
-    /* Fixed line height spacing */
     line-height: 1.0;
     letter-spacing: -0.06em;
     margin: 0;
-    padding-bottom: 0.2em; /* Stop descenders from clipping */
-
-    /* Subtlest continuous animated shimmer flow */
+    padding-bottom: 0.2em;
     background: linear-gradient(90deg, #1e293b, #6366f1, #38bdf8, #1e293b);
     background-size: 300% auto;
     -webkit-background-clip: text;
@@ -140,38 +375,11 @@
     color: #64748b;
     text-transform: uppercase;
     letter-spacing: 0.4em;
-    animation: fadePulse 3s infinite ease-in-out;
+    transition: opacity 0.5s ease;
   }
+  .scroll-hint.hidden { opacity: 0; }
+  .scroll-hint.visible { animation: fadePulse 3s infinite ease-in-out; }
 
-  /* Deep Narrative Block */
-  .timeline-block {
-    height: 150vh; /* Huge spacing forces scrolling and slows pacing */
-  }
-
-  .sticky-container {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 0 5vw;
-    box-sizing: border-box;
-  }
-
-  .content-box {
-    width: 100%;
-    max-width: 800px;
-    padding: 2.5rem;
-    /* Removed all hover-scale transitions to improve rendering stability */
-  }
-
-  /* Structural alignments */
-  .align-center { margin: 0 auto; text-align: center; }
-  .align-left { margin-right: auto; text-align: left; padding-left: 8vw; }
-  .align-right { margin-left: auto; text-align: right; padding-right: 8vw; }
-
-  /* Narrative Typography Rules */
   .epoch-header {
     display: flex;
     align-items: center;
