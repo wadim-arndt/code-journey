@@ -93,7 +93,21 @@
             <p class="poetic-text">"{epoch.poetic}"</p>
             <p class="section-desc">{epoch.narrative}</p>
 
-            <!-- THE WOW MOMENT: THE TEXT EVOLUTION FOR MACHINE ERA (Removed based on user feedback) -->
+            <!-- CODE WINDOW: VISUAL EVOLUTION -->
+            <div class="code-window">
+              <div class="code-header">
+                <span class="dot-red"></span>
+                <span class="dot-amber"></span>
+                <span class="dot-green"></span>
+              </div>
+              <pre class="code-content">
+                {#each epoch.codeSnippet as line}
+                  <code>{line}</code>
+                {/each}
+              </pre>
+            </div>
+
+            <!-- THE WOW MOMENT: ... -->
 
           </div>
         </div>
@@ -265,9 +279,65 @@
     filter: blur(5px);
   }
 
-  .align-center { margin: 0 auto; text-align: center; }
-  .align-left { margin-right: auto; text-align: left; padding-left: 8vw; }
   .align-right { margin-left: auto; text-align: right; padding-right: 12vw; }
+  
+  /* ---------------------------------
+     CODE WINDOW (VISUAL EVOLUTION)
+  --------------------------------- */
+  .code-window {
+    margin-top: 3rem;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .code-window:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(37, 99, 235, 0.1);
+    border-color: rgba(37, 99, 235, 0.3);
+  }
+
+  .code-header {
+    background: rgba(0, 0, 0, 0.03);
+    padding: 0.8rem 1.2rem;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .code-header span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .dot-red { background: #ff5f56; }
+  .dot-amber { background: #ffbd2e; }
+  .dot-green { background: #27c93f; }
+
+  .code-content {
+    margin: 0;
+    padding: 1.5rem;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #334155;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .code-content code {
+    display: block;
+    white-space: pre;
+  }
 
 
 
