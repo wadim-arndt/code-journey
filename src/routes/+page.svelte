@@ -93,19 +93,7 @@
             <p class="poetic-text">"{epoch.poetic}"</p>
             <p class="section-desc">{epoch.narrative}</p>
 
-            <!-- THE WOW MOMENT: THE TEXT EVOLUTION FOR MACHINE ERA -->
-            {#if epoch.era === "Machine Era"}
-              <div class="evolution-moment" class:evolved={activeIndex === i}>
-                <div class="binary-state">
-                  01001100 01001111 01000001<br/>
-                  01000100 00100000 01010010
-                </div>
-                <div class="assembly-state">
-                  LOAD R1, 0x4F<br/>
-                  ADD R2, R1
-                </div>
-              </div>
-            {/if}
+            <!-- THE WOW MOMENT: THE TEXT EVOLUTION FOR MACHINE ERA (Removed based on user feedback) -->
 
           </div>
         </div>
@@ -282,58 +270,6 @@
   .align-right { margin-left: auto; text-align: right; padding-right: 12vw; }
 
 
-  /* ---------------------------------
-     TEXT EVOLUTION (THE WOW MOMENT)
-  --------------------------------- */
-  .evolution-moment {
-    position: relative;
-    margin-top: 2rem;
-    padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.4);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: 8px;
-    height: 60px;
-    overflow: hidden;
-  }
-
-  .binary-state, .assembly-state {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-family: monospace;
-    font-size: 1rem;
-    font-weight: 700;
-    transition: all 1.8s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .binary-state {
-    color: #94a3b8;
-    letter-spacing: 0.2em;
-    opacity: 1;
-    filter: blur(0px);
-  }
-
-  .assembly-state {
-    color: #2563eb;
-    letter-spacing: 0.1em;
-    opacity: 0;
-    filter: blur(10px);
-    transform: translateY(-50%) translateX(-20px);
-  }
-
-  /* When the class 'evolved' is attached (section active) flip the states */
-  .evolution-moment.evolved .binary-state {
-    opacity: 0;
-    filter: blur(15px);
-    transform: translateY(-50%) translateX(20px);
-  }
-
-  .evolution-moment.evolved .assembly-state {
-    opacity: 1;
-    filter: blur(0px);
-    transform: translateY(-50%) translateX(0);
-    transition-delay: 0.4s; /* Slight delay feels dramatic */
-  }
 
 
   /* ---------------------------------
