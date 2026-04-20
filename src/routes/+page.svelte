@@ -93,12 +93,36 @@
             <p class="poetic-text">"{epoch.poetic}"</p>
             <p class="section-desc">{epoch.narrative}</p>
 
-            <!-- THE WOW MOMENT: THE TEXT EVOLUTION FOR MACHINE ERA (Removed based on user feedback) -->
+            <!-- CODE WINDOW: VISUAL EVOLUTION -->
+            <div class="code-window">
+              <div class="code-header">
+                <span class="dot-red"></span>
+                <span class="dot-amber"></span>
+                <span class="dot-green"></span>
+              </div>
+              <pre class="code-content">
+                {#each epoch.codeSnippet as line}
+                  <code>{line}</code>
+                {/each}
+              </pre>
+            </div>
+
+            <!-- THE WOW MOMENT: ... -->
 
           </div>
         </div>
       </section>
     {/each}
+
+    <!-- FINAL OUTRO SECTION -->
+    <section class="chapter outro narrative-section" data-index={epochs.length}>
+      <div class="content-box align-center {activeIndex === epochs.length ? 'is-active' : 'is-inactive'}">
+        <blockquote class="outro-quote">
+          "There are only two kinds of languages: the ones people complain about and the ones nobody uses."
+          <footer class="outro-author">— Bjarne Stroustrup</footer>
+        </blockquote>
+      </div>
+    </section>
   </main>
 </div>
 
@@ -128,7 +152,7 @@
       #a5f3fc 70%,
       #dbeafe 80%,
       #ffffff 90%,
-      #ffffff 100%
+      #e0f2fe 100%
     );
   }
 
@@ -137,7 +161,7 @@
   --------------------------------- */
   .timeline-indicator {
     position: fixed;
-    right: 2rem;
+    right: 3rem;
     top: 50%;
     transform: translateY(-50%);
     display: flex;
@@ -225,7 +249,8 @@
   }
 
   .timeline-block {
-    height: 150vh; 
+    height: 160vh; 
+    margin-bottom: 15vh;
   }
 
   .sticky-container {
@@ -253,21 +278,94 @@
     will-change: transform, opacity, filter;
   }
 
+  .align-center {
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  .align-left {
+    text-align: left;
+    margin-right: auto;
+    padding-left: 5vw;
+  }
+
+  .align-right {
+    text-align: right;
+    margin-left: auto;
+    padding-right: 15vw;
+  }
+
   .is-active {
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: translateY(0) scale(1);
     filter: blur(0px);
   }
 
   .is-inactive {
-    opacity: 0.25;
-    transform: scale(0.96) translateY(20px);
-    filter: blur(5px);
+    opacity: 0;
+    transform: translateY(30px) scale(0.98);
+    filter: blur(4px);
+    pointer-events: none;
   }
 
-  .align-center { margin: 0 auto; text-align: center; }
-  .align-left { margin-right: auto; text-align: left; padding-left: 8vw; }
-  .align-right { margin-left: auto; text-align: right; padding-right: 12vw; }
+  
+  /* ---------------------------------
+     CODE WINDOW (VISUAL EVOLUTION)
+  --------------------------------- */
+  .code-window {
+    margin-top: 3rem;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .code-window:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(37, 99, 235, 0.1);
+    border-color: rgba(37, 99, 235, 0.3);
+  }
+
+  .code-header {
+    background: rgba(0, 0, 0, 0.03);
+    padding: 0.8rem 1.2rem;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .code-header span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .dot-red { background: #ff5f56; }
+  .dot-amber { background: #ffbd2e; }
+  .dot-green { background: #27c93f; }
+
+  .code-content {
+    margin: 0;
+    padding: 1.5rem;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #334155;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .code-content code {
+    display: block;
+    white-space: pre;
+  }
 
 
 
@@ -287,6 +385,7 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: textShimmer 6s linear infinite;
+    text-align: center;
   }
 
   @keyframes textShimmer {
@@ -371,11 +470,57 @@
     100% { opacity: 0.2; }
   }
 
+  .outro {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: 
+      radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.4) 0%, transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+      linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f3e8ff 100%);
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
+    position: relative;
+    z-index: 10;
+  }
+
+  .outro-quote {
+    font-size: clamp(1.8rem, 4vw, 3.2rem);
+    font-family: Georgia, serif;
+    font-style: italic;
+    color: #334155;
+    line-height: 1.5;
+    max-width: 1000px;
+    margin: 0 auto;
+    border: none;
+    padding: 0 2rem;
+    letter-spacing: 0.02em;
+    transition: all 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
+  }
+
+  .is-active .outro-quote {
+    transform: scale(1.02);
+  }
+
+  .outro-author {
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    color: #64748b;
+    margin-top: 2rem;
+    letter-spacing: 0.1em;
+    padding-bottom: 12vh;
+  }
+
   @media (max-width: 768px) {
     .sticky-container { padding: 0 1.5rem; }
     .align-left, .align-right { text-align: left; margin: 0 auto; padding: 0; }
     .align-right .section-desc { margin-left: 0; }
     .align-right .epoch-header { justify-content: flex-start; }
     .content-box { padding: 1.5rem 0; }
+    .outro-quote { font-size: 1.5rem; padding: 0 1rem; }
   }
 </style>
