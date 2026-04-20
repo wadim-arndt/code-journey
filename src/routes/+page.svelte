@@ -123,9 +123,6 @@
         </blockquote>
       </div>
     </section>
-
-    <!-- EXTRA BOTTOM SPACING -->
-    <div class="final-spacer"></div>
   </main>
 </div>
 
@@ -155,7 +152,7 @@
       #a5f3fc 70%,
       #dbeafe 80%,
       #ffffff 90%,
-      #ffffff 100%
+      #e0f2fe 100%
     );
   }
 
@@ -164,7 +161,7 @@
   --------------------------------- */
   .timeline-indicator {
     position: fixed;
-    right: 2rem;
+    right: 3rem;
     top: 50%;
     transform: translateY(-50%);
     display: flex;
@@ -252,8 +249,8 @@
   }
 
   .timeline-block {
-    height: 180vh; 
-    margin-bottom: 20vh;
+    height: 130vh; 
+    margin-bottom: 5vh;
   }
 
   .sticky-container {
@@ -279,26 +276,38 @@
                 opacity 1.2s ease, 
                 filter 1.2s ease;
     will-change: transform, opacity, filter;
-    margin: 0 auto;
   }
 
   .align-center {
     text-align: center;
+    margin: 0 auto;
+  }
+
+  .align-left {
+    text-align: left;
+    margin-right: auto;
+    padding-left: 5vw;
+  }
+
+  .align-right {
+    text-align: right;
+    margin-left: auto;
+    padding-right: 15vw;
   }
 
   .is-active {
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: translateY(0) scale(1);
     filter: blur(0px);
   }
 
   .is-inactive {
-    opacity: 0.25;
-    transform: scale(0.96) translateY(20px);
-    filter: blur(5px);
+    opacity: 0;
+    transform: translateY(40px) scale(0.98);
+    filter: blur(2px);
+    pointer-events: none;
   }
 
-  .align-right { margin-left: auto; text-align: right; padding-right: 12vw; }
   
   /* ---------------------------------
      CODE WINDOW (VISUAL EVOLUTION)
@@ -462,24 +471,29 @@
   }
 
   .outro {
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: transparent;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f3e8ff 100%);
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
+    position: relative;
+    z-index: 10;
   }
 
   .outro-quote {
-    font-size: clamp(1.5rem, 3vw, 2.8rem);
+    font-size: clamp(1.8rem, 4vw, 3.2rem);
     font-family: Georgia, serif;
     font-style: italic;
-    color: #475569;
+    color: #334155;
     line-height: 1.5;
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
     border: none;
-    padding: 0;
+    padding: 0 2rem;
+    letter-spacing: 0.02em;
+    transition: all 1.5s ease;
   }
 
   .outro-author {
@@ -490,11 +504,7 @@
     color: #64748b;
     margin-top: 2rem;
     letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  .final-spacer {
-    height: 40vh;
+    padding-bottom: 12vh;
   }
 
   @media (max-width: 768px) {
