@@ -113,6 +113,19 @@
         </div>
       </section>
     {/each}
+
+    <!-- FINAL OUTRO SECTION -->
+    <section class="chapter outro narrative-section" data-index={epochs.length}>
+      <div class="content-box align-center {activeIndex === epochs.length ? 'is-active' : 'is-inactive'}">
+        <blockquote class="outro-quote">
+          "There are only two kinds of languages: the ones people complain about and the ones nobody uses."
+          <footer class="outro-author">— Bjarne Stroustrup</footer>
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- EXTRA BOTTOM SPACING -->
+    <div class="final-spacer"></div>
   </main>
 </div>
 
@@ -239,7 +252,8 @@
   }
 
   .timeline-block {
-    height: 150vh; 
+    height: 180vh; 
+    margin-bottom: 20vh;
   }
 
   .sticky-container {
@@ -265,6 +279,11 @@
                 opacity 1.2s ease, 
                 filter 1.2s ease;
     will-change: transform, opacity, filter;
+    margin: 0 auto;
+  }
+
+  .align-center {
+    text-align: center;
   }
 
   .is-active {
@@ -357,6 +376,7 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: textShimmer 6s linear infinite;
+    text-align: center;
   }
 
   @keyframes textShimmer {
@@ -441,11 +461,48 @@
     100% { opacity: 0.2; }
   }
 
+  .outro {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+  }
+
+  .outro-quote {
+    font-size: clamp(1.5rem, 3vw, 2.8rem);
+    font-family: Georgia, serif;
+    font-style: italic;
+    color: #475569;
+    line-height: 1.5;
+    max-width: 900px;
+    margin: 0 auto;
+    border: none;
+    padding: 0;
+  }
+
+  .outro-author {
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    color: #64748b;
+    margin-top: 2rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .final-spacer {
+    height: 40vh;
+  }
+
   @media (max-width: 768px) {
     .sticky-container { padding: 0 1.5rem; }
     .align-left, .align-right { text-align: left; margin: 0 auto; padding: 0; }
     .align-right .section-desc { margin-left: 0; }
     .align-right .epoch-header { justify-content: flex-start; }
     .content-box { padding: 1.5rem 0; }
+    .outro-quote { font-size: 1.5rem; padding: 0 1rem; }
   }
 </style>
