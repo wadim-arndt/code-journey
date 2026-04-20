@@ -249,8 +249,8 @@
   }
 
   .timeline-block {
-    height: 130vh; 
-    margin-bottom: 5vh;
+    height: 160vh; 
+    margin-bottom: 15vh;
   }
 
   .sticky-container {
@@ -303,8 +303,8 @@
 
   .is-inactive {
     opacity: 0;
-    transform: translateY(40px) scale(0.98);
-    filter: blur(2px);
+    transform: translateY(30px) scale(0.98);
+    filter: blur(4px);
     pointer-events: none;
   }
 
@@ -476,7 +476,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f3e8ff 100%);
+    background: 
+      radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.4) 0%, transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+      linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f3e8ff 100%);
     border-top: 1px solid rgba(255, 255, 255, 0.5);
     position: relative;
     z-index: 10;
@@ -493,7 +496,12 @@
     border: none;
     padding: 0 2rem;
     letter-spacing: 0.02em;
-    transition: all 1.5s ease;
+    transition: all 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
+  }
+
+  .is-active .outro-quote {
+    transform: scale(1.02);
   }
 
   .outro-author {
